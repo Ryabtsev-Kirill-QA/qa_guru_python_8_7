@@ -8,6 +8,7 @@ from utils import TMP_PATH, RESOURCES_PATH
 
 def test_names_of_files():
     files_in_dir = os.listdir(RESOURCES_PATH)
+
     with zipfile.ZipFile("tmp/test.zip") as zip_file:
         assert files_in_dir == zip_file.namelist()
 
@@ -33,7 +34,7 @@ def test_pdf_file_in_zip():
     text_last_page = last_page.extract_text()
 
     with zipfile.ZipFile(os.path.join(TMP_PATH, 'test.zip')) as pdf_z:
-        zip_pdf_file_open = PdfReader(pdf_z.open("Python Testing with Pytest (Brian Okken).pdf", "r"))
+        zip_pdf_file_open = PdfReader(pdf_z.open("Python Testing with Pytest (Brian Okken).pdf"))
         zip_pdf_file_info = pdf_z.getinfo("Python Testing with Pytest (Brian Okken).pdf")
 
         assert size_of_pdf == zip_pdf_file_info.file_size
