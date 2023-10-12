@@ -34,13 +34,10 @@ def test_pdf_file_in_zip():
     text_last_page = last_page.extract_text()
 
     with zipfile.ZipFile(os.path.join(TMP_PATH, 'test.zip')) as pdf_z:
-        zip_pdf_file_open = PdfReader(pdf_z.open("Python Testing with Pytest (Brian Okken).pdf"))
-        zip_pdf_file_info = pdf_z.getinfo("Python Testing with Pytest (Brian Okken).pdf")
-
-        assert size_of_pdf == zip_pdf_file_info.file_size
-        assert number_of_pages == len(zip_pdf_file_open.pages)
-        assert text_first_page == zip_pdf_file_open.pages[1].extract_text()
-        assert text_last_page == zip_pdf_file_open.pages[240].extract_text()
+        assert size_of_pdf == pdf_z.getinfo("Python Testing with Pytest (Brian Okken).pdf").file_size
+        assert number_of_pages == len(PdfReader(pdf_z.open("Python Testing with Pytest (Brian Okken).pdf")).pages)
+        assert text_first_page == PdfReader(pdf_z.open("Python Testing with Pytest (Brian Okken).pdf")).pages[1].extract_text()
+        assert text_last_page == PdfReader(pdf_z.open("Python Testing with Pytest (Brian Okken).pdf")).pages[240].extract_text()
 
 
 def test_xls_in_zip():
@@ -54,14 +51,12 @@ def test_xls_in_zip():
     sheet_value_xls = sheet_xls.cell_value(3, 3)
 
     with zipfile.ZipFile(os.path.join(TMP_PATH, 'test.zip')) as xls_z:
-        zip_xls_file_read = open_workbook(file_contents=xls_z.read("file_example_XLS_10.xls"))
-
         assert size_of_xls == xls_z.getinfo("file_example_XLS_10.xls").file_size
-        assert number_of_sheets_xls == zip_xls_file_read.nsheets
-        assert names_of_sheets_xls == zip_xls_file_read.sheet_names()
-        assert number_of_rows_xls == zip_xls_file_read.sheet_by_index(0).nrows
-        assert number_of_rows_cols_xls == zip_xls_file_read.sheet_by_index(0).ncols
-        assert sheet_value_xls == zip_xls_file_read.sheet_by_index(0).cell_value(3, 3)
+        assert number_of_sheets_xls == open_workbook(file_contents=xls_z.read("file_example_XLS_10.xls")).nsheets
+        assert names_of_sheets_xls == open_workbook(file_contents=xls_z.read("file_example_XLS_10.xls")).sheet_names()
+        assert number_of_rows_xls == open_workbook(file_contents=xls_z.read("file_example_XLS_10.xls")).sheet_by_index(0).nrows
+        assert number_of_rows_cols_xls == open_workbook(file_contents=xls_z.read("file_example_XLS_10.xls")).sheet_by_index(0).ncols
+        assert sheet_value_xls == open_workbook(file_contents=xls_z.read("file_example_XLS_10.xls")).sheet_by_index(0).cell_value(3, 3)
 
 
 def test_xlsx_file_in_zip():
@@ -73,9 +68,7 @@ def test_xlsx_file_in_zip():
     sheet_value_xlsx = sheet.cell(row=3, column=3).value
 
     with zipfile.ZipFile(os.path.join(TMP_PATH, 'test.zip')) as xlsx_z:
-        zip_xslx_file_open = load_workbook(xlsx_z.open("file_example_XLSX_50.xlsx"))
-
         assert size_of_xlsx == xlsx_z.getinfo("file_example_XLSX_50.xlsx").file_size
-        assert number_of_sheets_xlsx == len(zip_xslx_file_open.sheetnames)
-        assert names_of_sheets_xlsx == zip_xslx_file_open.sheetnames
-        assert sheet_value_xlsx == zip_xslx_file_open.active.cell(row=3, column=3).value
+        assert number_of_sheets_xlsx == len(load_workbook(xlsx_z.open("file_example_XLSX_50.xlsx")).sheetnames)
+        assert names_of_sheets_xlsx == load_workbook(xlsx_z.open("file_example_XLSX_50.xlsx")).sheetnames
+        assert sheet_value_xlsx == load_workbook(xlsx_z.open("file_example_XLSX_50.xlsx")).active.cell(row=3, column=3).value

@@ -19,4 +19,4 @@ def make_zip_and_tmp():
 
     yield
 
-    shutil.rmtree(TMP_PATH)
+    shutil.rmtree(TMP_PATH, ignore_errors=True)
